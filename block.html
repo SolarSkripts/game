@@ -25,7 +25,7 @@
   }
 
   #color-picker {
-    margin-bottom: 20px;
+    display: none;
   }
 
   .button {
@@ -37,6 +37,11 @@
     border: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
+    margin-right: 10px;
+  }
+
+  .button:last-child {
+    margin-right: 0;
   }
 
   .button:hover {
@@ -93,6 +98,7 @@
   <canvas id="gameCanvas" width="400" height="400"></canvas>
   <input type="color" id="color-picker">
   <button class="button" onclick="clearBlocks()">Clear Blocks</button>
+  <button class="button" onclick="selectColor()">Select Color</button>
   <label class="toggle-label">
     <input type="checkbox" class="toggle-input" id="dark-mode-toggle" onclick="toggleDarkMode()">
     <span class="toggle-slider"></span>
@@ -142,6 +148,11 @@ canvas.addEventListener('click', function(event) {
 function clearBlocks() {
   grid = grid.map(row => row.map(() => ''));
   drawGrid();
+}
+
+// Select color
+function selectColor() {
+  document.getElementById('color-picker').click();
 }
 
 // Color picker
