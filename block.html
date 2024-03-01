@@ -10,6 +10,7 @@
     text-align: center;
     background-color: #f0f0f0;
     color: #333;
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
 
   #game-container {
@@ -36,30 +37,26 @@
     margin-bottom: 20px;
   }
 
-  button {
+  #clear-button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #7289da;
+    background-color: #e74c3c;
     color: #fff;
     border: none;
     border-radius: 5px;
+    transition: background-color 0.3s ease;
   }
 
-  button:hover {
-    background-color: #677bc4;
+  #clear-button:hover {
+    background-color: #c0392b;
   }
 
-  .toggle-container {
-    display: flex;
-    justify-content: center;
+  #dark-mode-toggle {
     margin-top: 20px;
+    cursor: pointer;
   }
 
-  .toggle-label {
-    margin-right: 10px;
-    font-size: 16px;
-  }
 </style>
 </head>
 <body>
@@ -68,15 +65,8 @@
     <canvas id="gameCanvas" width="400" height="400"></canvas>
     <div id="color-box"></div>
     <input type="color" id="color-input">
-    <button onclick="changeColor()">Change Block Color</button>
-</div>
-
-<div class="toggle-container">
-  <label class="toggle-label">Dark Mode</label>
-  <label class="switch">
-    <input type="checkbox" id="darkModeToggle" onclick="toggleDarkMode()">
-    <span class="slider round"></span>
-  </label>
+    <button id="clear-button" onclick="clearBlocks()">Clear Blocks</button>
+    <div id="dark-mode-toggle" onclick="toggleDarkMode()">Dark Mode</div>
 </div>
 
 <script>
@@ -89,11 +79,11 @@ let grid = [];
 let paintColor = '#333';
 let darkMode = false;
 
-// Initialize grid with empty blocks and random colors
+// Initialize grid with empty blocks and default colors
 for (let i = 0; i < gridWidth; i++) {
   grid[i] = [];
   for (let j = 0; j < gridHeight; j++) {
-    grid[i][j] = getRandomColor();
+    grid[i][j] = { filled: false, color: '#fff' }; // empty block with default color
   }
 }
 
@@ -102,8 +92,10 @@ function drawGrid() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < gridWidth; i++) {
     for (let j = 0; j < gridHeight; j++) {
-      ctx.fillStyle = grid[i][j];
-      ctx.fillRect(i * blockSize, j * blockSize, blockSize, blockSize);
+      if (grid[i][j].filled) {
+        ctx.fillStyle = grid[i][j].color;
+        ctx.fillRect(i * blockSize, j * blockSize, blockSize, blockSize);
+      }
     }
   }
 }
@@ -112,7 +104,12 @@ function drawGrid() {
 canvas.addEventListener('click', function(event) {
   const x = Math.floor(event.offsetX / blockSize);
   const y = Math.floor(event.offsetY / blockSize);
-  grid[x][y] = paintColor;
+  if (grid[x][y].filled) {
+    grid[x][y].filled = false; // Clear block
+  } else {
+    grid[x][y].filled = true; // Fill block
+    grid[x][y].color = paintColor; // Set block color
+  }
   drawGrid();
 });
 
@@ -121,7 +118,17 @@ function changeColor() {
   paintColor = document.getElementById('color-input').value;
 }
 
-// Toggle dark mode
+// Clear blocks
+function clearBlocks() {
+  for (let i = 0; i < gridWidth; i++) {
+    for (let j = 0; j < gridHeight; j++) {
+      grid[i][j].filled = false;
+    }
+  }
+  drawGrid();
+}
+
+// Dark mode toggle
 function toggleDarkMode() {
   darkMode = !darkMode;
   if (darkMode) {
@@ -133,20 +140,9 @@ function toggleDarkMode() {
   }
 }
 
-// Get random color
-function getRandomColor() {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
 // Initial draw
 drawGrid();
 </script>
 
 </body>
 </html>
-
