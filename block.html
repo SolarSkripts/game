@@ -44,10 +44,6 @@
     margin-right: 0;
   }
 
-  .button:hover {
-    background-color: #677bc4;
-  }
-
   .toggle-label {
     position: relative;
     display: inline-block;
@@ -95,10 +91,12 @@
 <body>
 
 <div class="container">
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <canvas id="gameCanvas" width="640" height="640"></canvas>
   <input type="color" id="color-picker">
   <button class="button" onclick="clearBlocks()">Clear Blocks</button>
   <button class="button" onclick="selectColor()">Select Color</button>
+  <button class="button" onclick="setGridSize(16)">32x32</button>
+  <button class="button" onclick="setGridSize(32)">64x64</button>
   <label class="toggle-label">
     <input type="checkbox" class="toggle-input" id="dark-mode-toggle" onclick="toggleDarkMode()">
     <span class="toggle-slider"></span>
@@ -108,17 +106,16 @@
 <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-const blockSize = 40;
-const gridWidth = Math.floor(canvas.width / blockSize);
-const gridHeight = Math.floor(canvas.height / blockSize);
+let gridSize = 16; // Default grid size
+let blockSize = canvas.width / gridSize;
 let grid = [];
 let paintColor = '#7289da'; // Default color
 let darkMode = false;
 
 // Initialize grid with empty blocks
-for (let i = 0; i < gridWidth; i++) {
+for (let i = 0; i < gridSize; i++) {
   grid[i] = [];
-  for (let j = 0; j < gridHeight; j++) {
+  for (let j = 0; j < gridSize; j++) {
     grid[i][j] = ''; // Empty string represents an empty block
   }
 }
@@ -126,8 +123,9 @@ for (let i = 0; i < gridWidth; i++) {
 // Draw grid
 function drawGrid() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let i = 0; i < gridWidth; i++) {
-    for (let j = 0; j < gridHeight; j++) {
+  blockSize = canvas.width / gridSize;
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
       if (grid[i][j]) {
         ctx.fillStyle = grid[i][j];
         ctx.fillRect(i * blockSize, j * blockSize, blockSize, blockSize);
@@ -155,6 +153,19 @@ function selectColor() {
   document.getElementById('color-picker').click();
 }
 
+// Set grid size
+function setGridSize(size) {
+  gridSize = size;
+  grid = [];
+  for (let i = 0; i < gridSize; i++) {
+    grid[i] = [];
+    for (let j = 0; j < gridSize; j++) {
+      grid[i][j] = '';
+    }
+  }
+  drawGrid();
+}
+
 // Color picker
 document.getElementById('color-picker').addEventListener('change', function(event) {
   paintColor = event.target.value;
@@ -171,3 +182,4 @@ function toggleDarkMode() {
 
 </body>
 </html>
+
