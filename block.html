@@ -3,70 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Block Game with Color Changer</title>
+<title>Block Game</title>
 <style>
   body {
     font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f0f0f0;
-    color: #333;
-    transition: background-color 0.5s ease, color 0.5s ease;
+    background-color: #36393f;
+    color: #fff;
+    margin: 0;
+    padding: 0;
   }
 
-  #game-container {
-    display: inline-block;
-    margin: 20px;
+  .container {
+    text-align: center;
+    margin-top: 50px;
   }
 
   #gameCanvas {
-    display: block;
-    background-color: #ccc;
-    border: 2px solid #333;
-  }
-
-  #color-box {
-    width: 200px;
-    height: 200px;
-    background-color: #333;
-    margin: 20px auto;
-    border-radius: 10px;
-    transition: background-color 0.5s ease;
-  }
-
-  #color-input {
+    background-color: #2f3136;
+    border: 2px solid #7289da;
     margin-bottom: 20px;
   }
 
-  #clear-button {
+  #color-picker {
+    margin-bottom: 20px;
+  }
+
+  .button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #e74c3c;
+    background-color: #7289da;
     color: #fff;
     border: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
   }
 
-  #clear-button:hover {
-    background-color: #c0392b;
+  .button:hover {
+    background-color: #677bc4;
   }
 
-  #dark-mode-toggle {
-    margin-top: 20px;
+  .toggle-label {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+
+  .toggle-input {
+    display: none;
+  }
+
+  .toggle-slider {
+    position: absolute;
     cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 34px;
+    transition: background-color 0.3s ease;
   }
 
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+
+  input[type="checkbox"]:checked + .toggle-slider {
+    background-color: #7289da;
+  }
+
+  input[type="checkbox"]:checked + .toggle-slider:before {
+    transform: translateX(26px);
+  }
 </style>
 </head>
 <body>
 
-<div id="game-container">
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-    <div id="color-box"></div>
-    <input type="color" id="color-input">
-    <button id="clear-button" onclick="clearBlocks()">Clear Blocks</button>
-    <div id="dark-mode-toggle" onclick="toggleDarkMode()">Dark Mode</div>
+<div class="container">
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <input type="color" id="color-picker">
+  <button class="button" onclick="clearBlocks()">Clear Blocks</button>
+  <label class="toggle-label">
+    <input type="checkbox" class="toggle-input" id="dark-mode-toggle" onclick="toggleDarkMode()">
+    <span class="toggle-slider"></span>
+  </label>
 </div>
 
 <script>
@@ -76,14 +106,14 @@ const blockSize = 40;
 const gridWidth = Math.floor(canvas.width / blockSize);
 const gridHeight = Math.floor(canvas.height / blockSize);
 let grid = [];
-let paintColor = '#333';
+let paintColor = '#7289da'; // Default color
 let darkMode = false;
 
-// Initialize grid with empty blocks and default colors
+// Initialize grid with empty blocks
 for (let i = 0; i < gridWidth; i++) {
   grid[i] = [];
   for (let j = 0; j < gridHeight; j++) {
-    grid[i][j] = { filled: false, color: '#fff' }; // empty block with default color
+    grid[i][j] = ''; // Empty string represents an empty block
   }
 }
 
@@ -92,56 +122,40 @@ function drawGrid() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < gridWidth; i++) {
     for (let j = 0; j < gridHeight; j++) {
-      if (grid[i][j].filled) {
-        ctx.fillStyle = grid[i][j].color;
+      if (grid[i][j]) {
+        ctx.fillStyle = grid[i][j];
         ctx.fillRect(i * blockSize, j * blockSize, blockSize, blockSize);
       }
     }
   }
 }
 
-// Handle mouse click to place or remove blocks
+// Handle mouse click to place blocks
 canvas.addEventListener('click', function(event) {
   const x = Math.floor(event.offsetX / blockSize);
   const y = Math.floor(event.offsetY / blockSize);
-  if (grid[x][y].filled) {
-    grid[x][y].filled = false; // Clear block
-  } else {
-    grid[x][y].filled = true; // Fill block
-    grid[x][y].color = paintColor; // Set block color
-  }
+  grid[x][y] = paintColor;
   drawGrid();
 });
 
-// Color changer
-function changeColor() {
-  paintColor = document.getElementById('color-input').value;
-}
-
 // Clear blocks
 function clearBlocks() {
-  for (let i = 0; i < gridWidth; i++) {
-    for (let j = 0; j < gridHeight; j++) {
-      grid[i][j].filled = false;
-    }
-  }
+  grid = grid.map(row => row.map(() => ''));
   drawGrid();
 }
 
-// Dark mode toggle
+// Color picker
+document.getElementById('color-picker').addEventListener('change', function(event) {
+  paintColor = event.target.value;
+});
+
+// Dark mode/light mode toggle
 function toggleDarkMode() {
   darkMode = !darkMode;
-  if (darkMode) {
-    document.body.style.backgroundColor = '#333';
-    document.body.style.color = '#fff';
-  } else {
-    document.body.style.backgroundColor = '#f0f0f0';
-    document.body.style.color = '#333';
-  }
+  document.body.style.backgroundColor = darkMode ? '#36393f' : '#fff';
+  document.body.style.color = darkMode ? '#fff' : '#333';
+  drawGrid();
 }
-
-// Initial draw
-drawGrid();
 </script>
 
 </body>
