@@ -66,6 +66,7 @@ const blockSize = 40;
 const gridWidth = Math.floor(canvas.width / blockSize);
 const gridHeight = Math.floor(canvas.height / blockSize);
 let grid = [];
+let paintColor = '#333';
 
 // Initialize grid with empty blocks
 for (let i = 0; i < gridWidth; i++) {
@@ -81,7 +82,7 @@ function drawGrid() {
   for (let i = 0; i < gridWidth; i++) {
     for (let j = 0; j < gridHeight; j++) {
       if (grid[i][j] === 1) {
-        ctx.fillStyle = '#333';
+        ctx.fillStyle = paintColor;
         ctx.fillRect(i * blockSize, j * blockSize, blockSize, blockSize);
       }
     }
@@ -102,8 +103,7 @@ canvas.addEventListener('click', function(event) {
 
 // Color changer
 function changeColor() {
-  var colorValue = document.getElementById('color-input').value;
-  document.getElementById('color-box').style.backgroundColor = colorValue;
+  paintColor = document.getElementById('color-input').value;
 }
 
 // Initial draw
