@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Block Game with Color Changer</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+  }
+
+  #game-container {
+    display: inline-block;
+    margin: 20px;
+  }
+
+  #gameCanvas {
+    display: block;
+    background-color: #ccc;
+    border: 2px solid #333;
+  }
+
+  #color-box {
+    width: 200px;
+    height: 200px;
+    background-color: #333;
+    margin: 20px auto;
+    border-radius: 10px;
+    transition: background-color 0.5s ease;
+  }
+
+  #color-input {
+    margin-bottom: 20px;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #7289da;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+  }
+
+  button:hover {
+    background-color: #677bc4;
+  }
+</style>
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div id="color-box"></div>
+    <input type="color" id="color-input">
+    <button onclick="changeColor()">Change Color</button>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const blockSize = 40;
+const gridWidth = Math.floor(canvas.width / blockSize);
+const gridHeight = Math.floor(canvas.height / blockSize);
+let grid = [];
+
+// Initialize grid with empty blocks
+for (let i = 0; i < gridWidth; i++) {
+  grid[i] = [];
+  for (let j = 0; j < gridHeight; j++) {
+    grid[i][j] = 0; // 0 represents an empty block
+  }
+}
+
+// Draw grid
+function drawGrid() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < gridWidth; i++) {
+    for (let j = 0; j < gridHeight; j++) {
+      if (grid[i][j] === 1) {
+        ctx.fillStyle = '#333';
+        ctx.fillRect(i * blockSize, j * blockSize, blockSize, blockSize);
+      }
+    }
+  }
+}
+
+// Handle mouse click to place or remove blocks
+canvas.addEventListener('click', function(event) {
+  const x = Math.floor(event.offsetX / blockSize);
+  const y = Math.floor(event.offsetY / blockSize);
+  if (grid[x][y] === 0) {
+    grid[x][y] = 1; // Place block
+  } else {
+    grid[x][y] = 0; // Remove block
+  }
+  drawGrid();
+});
+
+// Color changer
+function changeColor() {
+  var colorValue = document.getElementById('color-input').value;
+  document.getElementById('color-box').style.backgroundColor = colorValue;
+}
+
+// Initial draw
+drawGrid();
+</script>
+
+</body>
+</html>
