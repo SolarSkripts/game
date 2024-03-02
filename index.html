@@ -12,18 +12,25 @@
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  header, footer {
+    background-color: #7289da;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
   }
 
   .container {
+    flex: 1;
     text-align: center;
   }
 
   h1 {
     font-size: 36px;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     text-transform: uppercase;
   }
 
@@ -51,21 +58,59 @@
     padding: 10px;
     font-size: 24px;
   }
+
+  footer {
+    margin-top: auto;
+  }
+
+  .footer-text {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer-links a {
+    color: #fff;
+    margin: 0 10px;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover {
+    color: #ccc;
+  }
 </style>
 </head>
 <body>
 
-<div class="container">
+<header>
   <h1>Welcome to the Game Website</h1>
+</header>
+
+<div class="container">
   <a href="rps.html" class="game-link">
     <img class="game-img" src="rps.png" alt="Rock Paper Scissors">
     <div class="game-caption">Rock Paper Scissors</div>
   </a>
   <a href="block.html" class="game-link">
-    <img class="game-img" src="block.png" alt="Paint / Canvas Game">
-    <div class="game-caption">Paint / Canvas Game</div>
+    <img class="game-img" src="block.jpg" alt="Paint / Canvas Game">
+    <div class="game-caption">Paint</div>
   </a>
 </div>
 
+<footer>
+  <p class="footer-text">© 2023 Game Website. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="developers.html">Devs</a>
+    <a href="documentation.html">Docs</a>
+    <a href="links.html">Links</a>
+  </div>
+</footer>
+
 </body>
 </html>
+
