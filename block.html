@@ -53,6 +53,7 @@
       <button class="button" onclick="clearBlocks()">Clear Blocks</button>
       <button class="button" onclick="setGridSize(16)">16x16</button>
       <button class="button" onclick="setGridSize(32)">32x32</button>
+      <button class="button" onclick="saveImage()">Save to Computer</button>
     </div>
   </div>
   <canvas id="gameCanvas" width="640" height="640"></canvas>
@@ -135,6 +136,17 @@ function setGridSize(size) {
 document.getElementById('color-picker').addEventListener('input', function(event) {
   paintColor = event.target.value;
 });
+
+// Save image to computer
+function saveImage() {
+  const dataUrl = canvas.toDataURL('image/png');
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = 'canvas_image.png';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
 </script>
 
 </body>
