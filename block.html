@@ -15,7 +15,10 @@
   }
 
   .container {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     margin-top: 50px;
     position: relative;
   }
@@ -31,28 +34,28 @@
     border: 2px solid #7289da;
     padding: 10px;
     border-radius: 5px;
-    display: inline-block;
     margin-bottom: 10px;
     cursor: pointer;
     user-select: none;
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
   }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <canvas id="gameCanvas" width="640" height="640"></canvas>
-  <div id="widget" class="widget">
-    <input type="color" id="color-picker">
-    <label for="color-picker">Select Color</label>
-    <button class="button" onclick="clearBlocks()">Clear Blocks</button>
-    <button class="button" onclick="setGridSize(16)">16x16</button>
-    <button class="button" onclick="setGridSize(32)">32x32</button>
+  <h1>Canvas</h1>
+  <div class="widgets">
+    <div id="colorWidget" class="widget">
+      <input type="color" id="color-picker">
+      <label for="color-picker">Select Color</label>
+    </div>
+    <div id="buttonWidget" class="widget">
+      <button class="button" onclick="clearBlocks()">Clear Blocks</button>
+      <button class="button" onclick="setGridSize(16)">16x16</button>
+      <button class="button" onclick="setGridSize(32)">32x32</button>
+    </div>
   </div>
+  <canvas id="gameCanvas" width="640" height="640"></canvas>
 </div>
 
 <script>
@@ -100,10 +103,6 @@ canvas.addEventListener('mousemove', function(event) {
   if (painting) {
     draw(event);
   }
-});
-
-canvas.addEventListener('click', function(event) {
-  draw(event);
 });
 
 function draw(event) {
