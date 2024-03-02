@@ -95,8 +95,8 @@
   <input type="color" id="color-picker">
   <button class="button" onclick="clearBlocks()">Clear Blocks</button>
   <button class="button" onclick="selectColor()">Select Color</button>
-  <button class="button" onclick="setGridSize(16)">32x32</button>
-  <button class="button" onclick="setGridSize(32)">64x64</button>
+  <button class="button" onclick="setGridSize(16)">16x16</button>
+  <button class="button" onclick="setGridSize(32)">32x32</button>
   <label class="toggle-label">
     <input type="checkbox" class="toggle-input" id="dark-mode-toggle" onclick="toggleDarkMode()">
     <span class="toggle-slider"></span>
@@ -106,7 +106,7 @@
 <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-let gridSize = 16; // Default grid size
+let gridSize = 32; // Default grid size
 let blockSize = canvas.width / gridSize;
 let grid = [];
 let paintColor = '#7289da'; // Default color
@@ -182,4 +182,5 @@ function toggleDarkMode() {
 
 </body>
 </html>
+
 
