@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Block Game</title>
-<link rel="icon" type="image/x-icon" href="favicon.png">
+<title>Canvas</title>
+<link rel="icon" type="image/png" href="favicon.png">
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -17,6 +17,7 @@
   .container {
     text-align: center;
     margin-top: 50px;
+    position: relative;
   }
 
   #gameCanvas {
@@ -26,30 +27,18 @@
     cursor: crosshair;
   }
 
-  .button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #7289da;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    margin-right: 10px;
-  }
-
-  .button:last-child {
-    margin-right: 0;
-  }
-
   .widget {
     border: 2px solid #7289da;
     padding: 10px;
     border-radius: 5px;
     display: inline-block;
-    margin: 0 10px;
+    margin-bottom: 10px;
     cursor: move;
     user-select: none;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 </style>
 </head>
@@ -57,18 +46,12 @@
 
 <div class="container">
   <canvas id="gameCanvas" width="640" height="640"></canvas>
-  <div id="colorPickerWidget" class="widget" draggable="true" ondragstart="drag(event)">
+  <div id="widget" class="widget" draggable="true" ondragstart="drag(event)">
     <input type="color" id="color-picker">
     <label for="color-picker">Select Color</label>
-  </div>
-  <div id="clearButtonWidget" class="widget" draggable="true" ondragstart="drag(event)">
     <button class="button" onclick="clearBlocks()">Clear Blocks</button>
-    <label for="clearBlocks">Clear Blocks</label>
-  </div>
-  <div id="gridSizeWidget" class="widget" draggable="true" ondragstart="drag(event)">
     <button class="button" onclick="setGridSize(16)">16x16</button>
     <button class="button" onclick="setGridSize(32)">32x32</button>
-    <label for="gridSize">Grid Size</label>
   </div>
 </div>
 
@@ -79,6 +62,7 @@ let gridSize = 32; // Default grid size
 let blockSize = canvas.width / gridSize;
 let grid = [];
 let paintColor = '#7289da'; // Default color
+let painting = false;
 
 // Initialize grid with empty blocks
 for (let i = 0; i < gridSize; i++) {
@@ -103,12 +87,25 @@ function drawGrid() {
 }
 
 // Handle mouse click to place blocks
-canvas.addEventListener('click', function(event) {
-  const x = Math.floor(event.offsetX / blockSize);
-  const y = Math.floor(event.offsetY / blockSize);
-  grid[x][y] = paintColor;
-  drawGrid();
+canvas.addEventListener('mousedown', function(event) {
+  painting = true;
+  draw(event);
 });
+
+canvas.addEventListener('mouseup', function(event) {
+  painting = false;
+});
+
+canvas.addEventListener('mousemove', draw);
+
+function draw(event) {
+  if (painting) {
+    const x = Math.floor(event.offsetX / blockSize);
+    const y = Math.floor(event.offsetY / blockSize);
+    grid[x][y] = paintColor;
+    drawGrid();
+  }
+}
 
 // Clear blocks
 function clearBlocks() {
@@ -134,7 +131,7 @@ document.getElementById('color-picker').addEventListener('change', function(even
   paintColor = event.target.value;
 });
 
-// Drag and drop functionality for widgets
+// Drag and drop functionality for widget
 function drag(event) {
   event.dataTransfer.setData('text', event.target.id);
 }
@@ -154,6 +151,5 @@ canvas.addEventListener('drop', function(event) {
 
 </body>
 </html>
-
 
 
