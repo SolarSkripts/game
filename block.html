@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Canvas</title>
-<link rel="icon" type="image/png" href="favicon.png">
+<title>Block Game</title>
+<link rel="icon" type="image/x-icon" href="favicon.png">
 <style>
   body {
     font-family: Arial, sans-serif;
-    background-color: #36393f;
-    color: #fff;
+    background-color: #fff;
+    color: #333;
     margin: 0;
     padding: 0;
   }
@@ -20,13 +20,10 @@
   }
 
   #gameCanvas {
-    background-color: #2f3136;
+    background-color: #ddd;
     border: 2px solid #7289da;
     margin-bottom: 20px;
-  }
-
-  #color-picker {
-    display: none;
+    cursor: crosshair;
   }
 
   .button {
@@ -45,47 +42,14 @@
     margin-right: 0;
   }
 
-  .toggle-label {
-    position: relative;
+  .widget {
+    border: 2px solid #7289da;
+    padding: 10px;
+    border-radius: 5px;
     display: inline-block;
-    width: 60px;
-    height: 34px;
-  }
-
-  .toggle-input {
-    display: none;
-  }
-
-  .toggle-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    border-radius: 34px;
-    transition: background-color 0.3s ease;
-  }
-
-  .toggle-slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: #fff;
-    border-radius: 50%;
-    transition: transform 0.3s ease;
-  }
-
-  input[type="checkbox"]:checked + .toggle-slider {
-    background-color: #7289da;
-  }
-
-  input[type="checkbox"]:checked + .toggle-slider:before {
-    transform: translateX(26px);
+    margin: 0 10px;
+    cursor: move;
+    user-select: none;
   }
 </style>
 </head>
@@ -93,15 +57,19 @@
 
 <div class="container">
   <canvas id="gameCanvas" width="640" height="640"></canvas>
-  <input type="color" id="color-picker">
-  <button class="button" onclick="clearBlocks()">Clear Blocks</button>
-  <button class="button" onclick="selectColor()">Select Color</button>
-  <button class="button" onclick="setGridSize(16)">16x16</button>
-  <button class="button" onclick="setGridSize(32)">32x32</button>
-  <label class="toggle-label">
-    <input type="checkbox" class="toggle-input" id="dark-mode-toggle" onclick="toggleDarkMode()">
-    <span class="toggle-slider"></span>
-  </label>
+  <div id="colorPickerWidget" class="widget" draggable="true" ondragstart="drag(event)">
+    <input type="color" id="color-picker">
+    <label for="color-picker">Select Color</label>
+  </div>
+  <div id="clearButtonWidget" class="widget" draggable="true" ondragstart="drag(event)">
+    <button class="button" onclick="clearBlocks()">Clear Blocks</button>
+    <label for="clearBlocks">Clear Blocks</label>
+  </div>
+  <div id="gridSizeWidget" class="widget" draggable="true" ondragstart="drag(event)">
+    <button class="button" onclick="setGridSize(16)">16x16</button>
+    <button class="button" onclick="setGridSize(32)">32x32</button>
+    <label for="gridSize">Grid Size</label>
+  </div>
 </div>
 
 <script>
@@ -111,7 +79,6 @@ let gridSize = 32; // Default grid size
 let blockSize = canvas.width / gridSize;
 let grid = [];
 let paintColor = '#7289da'; // Default color
-let darkMode = false;
 
 // Initialize grid with empty blocks
 for (let i = 0; i < gridSize; i++) {
@@ -149,11 +116,6 @@ function clearBlocks() {
   drawGrid();
 }
 
-// Select color
-function selectColor() {
-  document.getElementById('color-picker').click();
-}
-
 // Set grid size
 function setGridSize(size) {
   gridSize = size;
@@ -172,16 +134,26 @@ document.getElementById('color-picker').addEventListener('change', function(even
   paintColor = event.target.value;
 });
 
-// Dark mode/light mode toggle
-function toggleDarkMode() {
-  darkMode = !darkMode;
-  document.body.style.backgroundColor = darkMode ? '#36393f' : '#fff';
-  document.body.style.color = darkMode ? '#fff' : '#333';
-  drawGrid();
+// Drag and drop functionality for widgets
+function drag(event) {
+  event.dataTransfer.setData('text', event.target.id);
 }
+
+canvas.addEventListener('dragover', function(event) {
+  event.preventDefault();
+});
+
+canvas.addEventListener('drop', function(event) {
+  event.preventDefault();
+  const widgetId = event.dataTransfer.getData('text');
+  const widget = document.getElementById(widgetId);
+  widget.style.left = (event.clientX - widget.offsetWidth / 2) + 'px';
+  widget.style.top = (event.clientY - widget.offsetHeight / 2) + 'px';
+});
 </script>
 
 </body>
 </html>
+
 
 
