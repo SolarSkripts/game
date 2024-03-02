@@ -8,8 +8,8 @@
 <style>
   body {
     font-family: Arial, sans-serif;
-    background-color: #fff;
-    color: #333;
+    background-color: #36393f; /* Dark background color */
+    color: #fff; /* Light text color */
     margin: 0;
     padding: 0;
   }
@@ -21,7 +21,7 @@
   }
 
   #gameCanvas {
-    background-color: #ddd;
+    background-color: #36393f; /* Dark background color */
     border: 2px solid #7289da;
     margin-bottom: 20px;
     cursor: crosshair;
@@ -33,10 +33,10 @@
     border-radius: 5px;
     display: inline-block;
     margin-bottom: 10px;
-    cursor: move;
+    cursor: pointer;
     user-select: none;
     position: absolute;
-    bottom: 10px;
+    bottom: 20px; /* Lowered position */
     left: 50%;
     transform: translateX(-50%);
   }
@@ -46,7 +46,7 @@
 
 <div class="container">
   <canvas id="gameCanvas" width="640" height="640"></canvas>
-  <div id="widget" class="widget" draggable="true" ondragstart="drag(event)">
+  <div id="widget" class="widget" onmousedown="drag(event)">
     <input type="color" id="color-picker">
     <label for="color-picker">Select Color</label>
     <button class="button" onclick="clearBlocks()">Clear Blocks</button>
@@ -89,7 +89,6 @@ function drawGrid() {
 // Handle mouse click to place blocks
 canvas.addEventListener('mousedown', function(event) {
   painting = true;
-  draw(event);
 });
 
 canvas.addEventListener('mouseup', function(event) {
@@ -133,23 +132,27 @@ document.getElementById('color-picker').addEventListener('change', function(even
 
 // Drag and drop functionality for widget
 function drag(event) {
-  event.dataTransfer.setData('text', event.target.id);
+  let offsetX = event.clientX - event.target.getBoundingClientRect().left;
+  let offsetY = event.clientY - event.target.getBoundingClientRect().top;
+
+  document.onmousemove = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    let x = event.clientX - offsetX;
+    let y = event.clientY - offsetY;
+    document.getElementById('widget').style.left = x + 'px';
+    document.getElementById('widget').style.top = y + 'px';
+  };
+
+  document.onmouseup = function() {
+    document.onmousemove = null;
+    document.onmouseup = null;
+  };
 }
-
-canvas.addEventListener('dragover', function(event) {
-  event.preventDefault();
-});
-
-canvas.addEventListener('drop', function(event) {
-  event.preventDefault();
-  const widgetId = event.dataTransfer.getData('text');
-  const widget = document.getElementById(widgetId);
-  widget.style.left = (event.clientX - widget.offsetWidth / 2) + 'px';
-  widget.style.top = (event.clientY - widget.offsetHeight / 2) + 'px';
-});
 </script>
 
 </body>
 </html>
+
 
 
