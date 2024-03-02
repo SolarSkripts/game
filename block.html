@@ -36,7 +36,7 @@
     cursor: pointer;
     user-select: none;
     position: absolute;
-    bottom: 20px; /* Lowered position */
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
   }
@@ -46,7 +46,7 @@
 
 <div class="container">
   <canvas id="gameCanvas" width="640" height="640"></canvas>
-  <div id="widget" class="widget" onmousedown="drag(event)">
+  <div id="widget" class="widget">
     <input type="color" id="color-picker">
     <label for="color-picker">Select Color</label>
     <button class="button" onclick="clearBlocks()">Clear Blocks</button>
@@ -89,21 +89,28 @@ function drawGrid() {
 // Handle mouse click to place blocks
 canvas.addEventListener('mousedown', function(event) {
   painting = true;
+  draw(event);
 });
 
 canvas.addEventListener('mouseup', function(event) {
   painting = false;
 });
 
-canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mousemove', function(event) {
+  if (painting) {
+    draw(event);
+  }
+});
+
+canvas.addEventListener('click', function(event) {
+  draw(event);
+});
 
 function draw(event) {
-  if (painting) {
-    const x = Math.floor(event.offsetX / blockSize);
-    const y = Math.floor(event.offsetY / blockSize);
-    grid[x][y] = paintColor;
-    drawGrid();
-  }
+  const x = Math.floor(event.offsetX / blockSize);
+  const y = Math.floor(event.offsetY / blockSize);
+  grid[x][y] = paintColor;
+  drawGrid();
 }
 
 // Clear blocks
@@ -129,30 +136,7 @@ function setGridSize(size) {
 document.getElementById('color-picker').addEventListener('change', function(event) {
   paintColor = event.target.value;
 });
-
-// Drag and drop functionality for widget
-function drag(event) {
-  let offsetX = event.clientX - event.target.getBoundingClientRect().left;
-  let offsetY = event.clientY - event.target.getBoundingClientRect().top;
-
-  document.onmousemove = function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    let x = event.clientX - offsetX;
-    let y = event.clientY - offsetY;
-    document.getElementById('widget').style.left = x + 'px';
-    document.getElementById('widget').style.top = y + 'px';
-  };
-
-  document.onmouseup = function() {
-    document.onmousemove = null;
-    document.onmouseup = null;
-  };
-}
 </script>
 
 </body>
 </html>
-
-
-
